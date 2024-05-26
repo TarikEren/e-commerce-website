@@ -18,6 +18,7 @@ app.use(cors());
 //HIGHLY IMPORTANT
 //TODO: Add a firewall to the server after deployment.
 //TODO: Research how to implement secure and reliable payments (PCI DSS)
+//TODO: Check payment processors. https://www.tcmb.gov.tr/wps/wcm/connect/TR/TCMB+TR/Main+Menu/Temel+Faaliyetler/Odeme+Sistemleri/Turkiyedeki+Odeme+Sistemleri/
 
 
 //TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
