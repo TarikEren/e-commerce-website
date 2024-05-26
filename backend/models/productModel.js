@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
-const Category = require("./categoryModel");
 
 const productSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    categories: {
-        type: [Category],
-        default: []
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true
     },
     description: {
         type: String,
@@ -16,32 +16,57 @@ const productSchema = mongoose.Schema({
     },
     price: {
         type: String,
-        required: true
+        default: 0
     },
     material: {
         type: String,
         required: true
     },
     size: {
-        height: Number,
-        weight: Number,
-        depth: Number,
+        height: {
+            type: Number,
+            required: true
+        },
+        width: {
+            type: Number,
+            required: true
+        },
+        depth: {
+            type: Number,
+            required: true
+        },
         required: true
     },
     color: {
         type: String,
+        required: true
     },
     quantity: {
         type: Number,
         default: 1
     },
-    Image: {
+    image: {
         type: String,
         default: ""
     },
-    Images: {
-        type: [Image],
-        default: []
+    images: {
+        type: [{ type: String }]
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    numReviews: {
+        type: Number,
+        default: 0
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now()
     }
 }, { collection: "products" });
 
