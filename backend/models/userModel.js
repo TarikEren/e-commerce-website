@@ -44,8 +44,11 @@ const userSchema = new mongoose.Schema({
         default: []
     },
 
-    //Pending orders if the user is currently waiting for any
-    pendingOrders: [Order]
+    //Past payments so that the user can review them
+    pastPayments: {
+        type: [Payment],
+        default: []
+    }
 }, { collection: "users" });
 
 userSchema.statics.signup = async function (email, password) {
