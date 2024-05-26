@@ -75,6 +75,4 @@ async function getProduct(req, res, next) {
     next();
 }
 
-
-
 module.exports = router;
