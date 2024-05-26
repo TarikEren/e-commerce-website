@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 
-const Order = require("./orderModel")
+const Payment = require("./paymentModel")
 const Product = require("./productModel");
 
 const userSchema = new mongoose.Schema({
@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
 
     //Pending orders if the user is currently waiting for any
     pendingOrders: [Order]
-}, {collection:"users"});
+}, { collection: "users" });
 
 userSchema.statics.signup = async function (email, password) {
     //Validate email and password.
@@ -81,7 +81,7 @@ userSchema.statics.login = async function (email, password) {
     if (!email || !password) {
         throw Error("All fields must be filled");
     }
-    
+
     const user = await this.findOne({ email });
     if (!user) {
         throw Error("Incorrect email");
