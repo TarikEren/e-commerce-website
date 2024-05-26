@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
+const Order = require("./orderModel.js");
 
-//TODO: Add required
+
 const productSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    category: {
-        type: String,
+    categories: {
+        type: [String],
         required: true
     },
-    desc: {
+    description: {
         type: String,
         required: true
     },
@@ -22,20 +23,21 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    width: {
-        type: Number,
-        required: true
-    },
-    height: {
-        type: Number,
-        required: true
-    },
-    depth: {
-        type: Number,
+    size: {
+        height: Number,
+        weight: Number,
+        depth: Number,
         required: true
     },
     color: {
         type: String,
+    },
+    quantity: {
+        type: Number,
+        default: 1
+    },
+    orders: {
+        type: [Order]
     }
 }, { collection: "products" });
 
