@@ -2,6 +2,8 @@
 //TODOS
 //TODO: Read the comments in the files.
 //TODO: Change the orderModel so that it supports other payment methods.
+//TODO: Check userController.js
+//TODO: Check productController.js
 
 require("dotenv").config();
 const express = require("express");
