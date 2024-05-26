@@ -15,6 +15,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+//HIGHLY IMPORTANT
+//TODO: Add a firewall to the server after deployment.
+//TODO: Research how to implement secure and reliable payments (PCI DSS)
+
+
+//TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
+//TODO: Login-Register
+
 async function startServer() {
     await mongoose.connect(DB_URL)
         .then(() => {
