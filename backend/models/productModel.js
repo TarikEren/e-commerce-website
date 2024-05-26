@@ -1,16 +1,12 @@
 const mongoose = require("mongoose");
-const Order = require("./orderModel.js");
-
+const Category = require("./categoryModel");
 
 const productSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    categories: {
-        type: [String],
-        required: true
-    },
+    categories: [Category],
     description: {
         type: String,
         required: true
@@ -35,9 +31,6 @@ const productSchema = mongoose.Schema({
     quantity: {
         type: Number,
         default: 1
-    },
-    orders: {
-        type: [Order]
     }
 }, { collection: "products" });
 
