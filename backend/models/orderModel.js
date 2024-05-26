@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Product = require("./productModel");
+const Order = require("./orderModel");
 
 //TODO: Implement custom validators
 const paymentSchema = new mongoose.Schema({
@@ -45,7 +45,7 @@ const paymentSchema = new mongoose.Schema({
     },
 
     //Items that are in the order
-    items: [Product],
+    items: [Order],
 
     //Destination address
     address: {
@@ -65,11 +65,14 @@ const paymentSchema = new mongoose.Schema({
     },
 
     //Carrier firm
-    carrier: String,
+    carrier: {
+        type: String,
+        default: ""
+    },
 
     //Tracking number issued by the carrier
     trackingNumber: Number
-}, { collection: "payments" });
+}, { collection: "orders" });
 
 orderSchema.pre("save", (next) => {
     this.expiration = this.time;
@@ -77,4 +80,4 @@ orderSchema.pre("save", (next) => {
     next();
 });
 
-module.exports = mongoose.model("Payment", paymentSchema);
+module.exports = mongoose.model("Order", paymentSchema);
