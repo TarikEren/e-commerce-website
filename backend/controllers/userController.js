@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/userModel");
+const Product = require("../models/productModel");
 const jwt = require("jsonwebtoken");
 
 const createToken = (_id) => {
@@ -57,9 +58,8 @@ router.route("/:id/cart")
     //For adding a product to the cart of a user
     .post(async (req, res) => {
         //Add new products
-        let product;
         try {
-
+            const product = Product.findById()
         }
         catch (err) {
 
