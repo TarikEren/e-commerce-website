@@ -30,7 +30,7 @@ router.post("/register")
         }
     });
 
-router.route("/cart")
+router.route("/:id/cart")
     .get(async (req, res) => {
         //Show all products
         try {
@@ -61,7 +61,7 @@ router.route("/cart")
     })
 
 
-router.get("/logout", () => {
+router.get("/:id/logout", () => {
 
 });
 
