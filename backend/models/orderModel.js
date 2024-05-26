@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
-const Order = require("./orderModel");
 
-//TODO: Implement custom validators
-const paymentSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema({
     //ID of customer who ordered
     customerId: {
         type: String,
@@ -25,14 +23,13 @@ const paymentSchema = new mongoose.Schema({
     },
 
     //When the order was issued.
-    time: {
+    dateOrdered: {
         type: Date,
         default: Date.now()
     },
 
-
     //Price of the order
-    price: {
+    totalPrice: {
         currency: String,
         type: Float32Array,
         default: 0
@@ -45,23 +42,41 @@ const paymentSchema = new mongoose.Schema({
     },
 
     //Items that are in the order
-    items: [Order],
+    orderItems: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "OrderItem",
+        required: true
+    }],
 
     //Destination address
-    address: {
+    shippingAddress1: {
         type: String,
+        required: true
+    },
+    shippingAddress2: {
+        type: String,
+        required: true
+    },
+
+    city: {
+        type: String,
+        required: true
+    },
+
+    zip: {
+        type: Number,
+        required: true
+    },
+
+    phone: {
+        type: Number,
         required: true
     },
 
     //Origin address
     origin: {
         type: String,
-        required: true
-    },
-
-    //Expiration date of the order
-    expiration: {
-        type: Date,
+        default: "Add origin address to the orderModel.js",
     },
 
     //Carrier firm
@@ -74,10 +89,4 @@ const paymentSchema = new mongoose.Schema({
     trackingNumber: Number
 }, { collection: "orders" });
 
-orderSchema.pre("save", (next) => {
-    this.expiration = this.time;
-    this.expiration.setDate(this.expiration.getDate() + 15);
-    next();
-});
-
-module.exports = mongoose.model("Order", paymentSchema);
+module.exports = mongoose.model("Order", orderSchema);
