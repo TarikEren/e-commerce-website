@@ -1,7 +1,8 @@
-//Create a .env file at the project root.
-//Add DB_URL and PORT variables into the .env file to use.
-//Run "npm run dev" for running the server with nodemon
-//Run "npm run start" for running the server with node
+
+//TODOS
+//TODO: Read the comments in the files.
+//TODO: Change the orderModel so that it supports other payment methods.
+
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
