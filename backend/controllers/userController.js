@@ -6,7 +6,16 @@ const createToken = (_id) => {
     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2h" });
 }
 
-//Login
+
+//USER SECTION
+router.route("/:id")
+    .get(() => {
+        //Get all user info
+    })
+    .put(() => {
+        //Edit user info 
+    })
+
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -18,7 +27,6 @@ router.post("/login", async (req, res) => {
     }
 });
 
-//Register
 router.post("/register", async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -30,10 +38,11 @@ router.post("/register", async (req, res) => {
     }
 })
 
-//Logout
 router.get("/:id/logout", () => {
 });
 
+
+//CART SECTION
 router.route("/:id/cart")
     //For viewing the cart of a user
     .get(async (req, res) => {
@@ -75,8 +84,10 @@ router.route("/:id/cart/:productID")
     //For deleting a certain product from the cart
     .delete(() => {
         //Remove a product from the cart
-    })
+    });
 
+
+//ORDER SECTION
 router.route("/:id/order")
     //For viewing every order of a user
     .get(() => {
