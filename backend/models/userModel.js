@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 
-const Payment = require("./paymentModel")
-const Product = require("./productModel");
+const Order = require("./orderModel");
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -36,11 +35,11 @@ const userSchema = new mongoose.Schema({
         }
     },
     cart: {
-        type: [Product],
+        type: [Order],
         default: []
     },
     likedProducts: {
-        type: [Product],
+        type: [Order],
         default: []
     },
 
