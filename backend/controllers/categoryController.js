@@ -18,8 +18,7 @@ router.route("/category")
         catch (error) {
 
         }
-
-    })
+    });
 
 router.route("/category/:name")
     //Get one category
@@ -30,5 +29,20 @@ router.route("/category/:name")
         catch (error) {
 
         }
-
     })
+    .put(() => {
+        try {
+
+        }
+        catch (error) {
+
+        }
+    })
+    .delete(() => {
+        try {
+
+        }
+        catch (error) {
+
+        }
+    });
