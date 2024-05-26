@@ -6,10 +6,13 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    categories: [Category],
+    categories: {
+        type: [Category],
+        default: []
+    },
     description: {
         type: String,
-        required: true
+        default: ""
     },
     price: {
         type: String,
@@ -31,6 +34,14 @@ const productSchema = mongoose.Schema({
     quantity: {
         type: Number,
         default: 1
+    },
+    Image: {
+        type: String,
+        default: ""
+    },
+    Images: {
+        type: [Image],
+        default: []
     }
 }, { collection: "products" });
 
