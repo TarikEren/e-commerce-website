@@ -59,6 +59,11 @@ const paymentSchema = new mongoose.Schema({
         required: true
     },
 
+    //Expiration date of the order
+    expiration: {
+        type: Date,
+    },
+
     //Carrier firm
     carrier: String,
 
@@ -66,5 +71,10 @@ const paymentSchema = new mongoose.Schema({
     trackingNumber: Number
 }, { collection: "payments" });
 
+orderSchema.pre("save", (next) => {
+    this.expiration = this.time;
+    this.expiration.setDate(this.expiration.getDate() + 15);
+    next();
+});
 
 module.exports = mongoose.model("Payment", paymentSchema);
