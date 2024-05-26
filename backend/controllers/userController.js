@@ -87,32 +87,28 @@ router.route("/:id/cart/:productID")
     });
 
 
-//ORDER SECTION
-router.route("/:id/order")
+//HISTORY SECTION (For past payments)
+router.route("/:id/history")
     //For viewing every order of a user
     .get(() => {
 
     })
-    //For creating an order for a user
+    //For pushing a successful payment to the past payments
     .post(() => {
 
     })
 
 //For removing all orders of a user (May be removed later on)
 router.delete("/:id/order", () => {
-    //Delete all orders of the user
+    //Delete all past orders of the user
 });
 
 router.route("/:id/order/:orderID")
-    //For viewing a certain order
+    //For viewing a certain past payment
     .get(() => {
 
     })
-    //For editing an order
-    .put(() => {
-
-    })
-    //For deleting an order
+    //For deleting a past payment
     .delete(() => {
 
     })
