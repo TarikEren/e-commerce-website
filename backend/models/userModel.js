@@ -35,8 +35,14 @@ const userSchema = new mongoose.Schema({
             default: 0
         }
     },
-    cart: [Product],
-    likedProducts: [Product],
+    cart: {
+        type: [Product],
+        default: []
+    },
+    likedProducts: {
+        type: [Product],
+        default: []
+    },
 
     //Pending orders if the user is currently waiting for any
     pendingOrders: [Order]
