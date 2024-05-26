@@ -24,9 +24,12 @@ app.use(cors());
 // https://fabric.inc/blog/product/build-vs-buy-pim-product-management
 // https://fabric.inc/blog/product/build-vs-buy-pim-data-distribution
 
-
+//Backend Related
 //TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
 //TODO: Login-Register
+
+//Frontend Related
+//TODO: Implement the entire frontend as it's currently non-existent
 
 async function startServer() {
     await mongoose.connect(DB_URL)
