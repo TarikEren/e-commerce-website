@@ -15,7 +15,9 @@ router.route("/")
     //Create a category
     .post(async (req, res) => {
         var category = new Category({
-            name: req.body.name
+            name: req.body.name,
+            icon: req.body.icon,
+            color: req.body.color
         })
         try {
             category = await Category.save();
@@ -42,9 +44,11 @@ router.route("/:id")
             const category = await Category.findByIdAndUpdate(
                 req.params.id,
                 {
-                    name: req.body.name || category.name
+                    name: req.body.name || category.name,
+                    icon: req.body.icon || category.icon,
+                    color: req.body.color || category.color
                 },
-                // { new: true }
+                { new: true }
             )
             res.status(200).send({message: `Edited category with ID ${category._id}`});
         }
