@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+
+const Order = require("./orderModel")
 const Product = require("./productModel");
 
 const userSchema = new mongoose.Schema({
@@ -13,6 +15,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+
+    //Payment or delivery address of the user
     address: {
         street1: {
             type: String,
@@ -31,13 +35,11 @@ const userSchema = new mongoose.Schema({
             default: 0
         }
     },
-    cart: {
-        type: [Product]
-    },
-    likedProducts: {
-        type: [Product]
-    },
+    cart: [Product],
+    likedProducts: [Product],
 
+    //Pending orders if the user is currently waiting for any
+    pendingOrders: [Order]
 }, {collection:"users"});
 
 userSchema.statics.signup = async function (email, password) {
