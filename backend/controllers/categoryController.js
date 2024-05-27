@@ -71,3 +71,5 @@ router.route("/:id")
             return res.status(500).send({message: error.message});
         }
     });
+
+module.exports = router;

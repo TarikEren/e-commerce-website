@@ -143,3 +143,5 @@ router.get("/get/userorders/:userid", async (req, res) => {
         res.status(500).send({message: error.message});
     }
 });
+
+module.exports = router;
