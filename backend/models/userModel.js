@@ -34,10 +34,6 @@ const userSchema = new mongoose.Schema({
             default: 0
         }
     },
-    cart: {
-        type: [Order],
-        default: []
-    },
     likedProducts: {
         type: [Order],
         default: []
@@ -50,7 +46,7 @@ const userSchema = new mongoose.Schema({
     }
 }, { collection: "users" });
 
-userSchema.statics.signup = async function (email, password) {
+userSchema.statics.signup = async function (email, password, address) {
     //Validate email and password.
     if (!email || !password) {
         throw Error("All fields must be filled");
@@ -75,7 +71,12 @@ userSchema.statics.signup = async function (email, password) {
     const hash = await bcrypt.hash(password, salt);
 
     //Create a user and return it.
-    const user = await this.create({ email, password: hash });
+    const user = await this.create(
+        {
+            email,
+            password: hash,
+            address,    
+        });
     return user;
 }
 
