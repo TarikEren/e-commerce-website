@@ -12,10 +12,10 @@ const productSchema = mongoose.Schema({
     },
     description: {
         type: String,
-        default: ""
+        required: true
     },
     price: {
-        type: String,
+        type: Number,
         default: 0
     },
     material: {
@@ -25,17 +25,16 @@ const productSchema = mongoose.Schema({
     size: {
         height: {
             type: Number,
-            required: true
+            default: 0
         },
         width: {
             type: Number,
-            required: true
+            default: 0
         },
         depth: {
             type: Number,
-            required: true
+            default: 0
         },
-        required: true
     },
     color: {
         type: String,
@@ -43,15 +42,15 @@ const productSchema = mongoose.Schema({
     },
     quantity: {
         type: Number,
-        default: 1
+        default: 0
     },
     image: {
         type: String,
         default: ""
     },
-    images: {
-        type: [{ type: String }]
-    },
+    images: [{
+        type: String
+    }],
     rating: {
         type: Number,
         default: 0
@@ -62,11 +61,11 @@ const productSchema = mongoose.Schema({
     },
     isFeatured: {
         type: Boolean,
-        default: false
+        default: false,
     },
     dateCreated: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
     }
 }, { collection: "products" });
 
