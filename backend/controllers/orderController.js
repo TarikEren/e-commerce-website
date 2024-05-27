@@ -44,7 +44,7 @@ router.route("/")
                 totalPrice: totalPrice,
                 user: req.body.user,
                 card: req.body.card,
-                gateway: req.body.gateway || "", //Change later
+                gateway: req.body.gateway || "Stripe", //Change later
                 type: req.body.type
             });
             order = await order.save();
