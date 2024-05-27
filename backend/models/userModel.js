@@ -3,6 +3,7 @@ const bcryptjs = require("bcryptjs");
 const validator = require("validator");
 
 const Order = require("./orderModel");
+const Product = require("./productModel");
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -16,34 +17,32 @@ const userSchema = new mongoose.Schema({
     },
 
     //Payment or delivery address of the user
-    address: {
+    address: [{
         street1: {
-            type: String,
-            default: ""
+            type: String
         },
         street2: {
-            type: String,
-            default: ""
+            type: String
         },
         city: {
-            type: String,
-            default: ""
+            type: String
         },
         zip: {
-            type: Number,
-            default: 0
+            type: Number
         }
+    }],
+    likedProducts: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Product",
+        default: []
     },
-    // likedProducts: {
-    //     type: [Order],
-    //     default: []
-    // },
 
-    // //Past payments so that the user can review them
-    // pastPayments: {
-    //     type: [Payment],
-    //     default: []
-    // }
+    //Past payments so that the user can review them
+    pastPayments: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Order",
+        default: []
+    }
 }, { collection: "users" });
 
 userSchema.statics.signup = async function (email, password, address) {
