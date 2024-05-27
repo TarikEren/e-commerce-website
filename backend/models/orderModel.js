@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema({
     //Price of the order
     totalPrice: {
         currency: String,
-        type: Float32Array,
+        type: mongoose.Schema.Types.Decimal128,
         default: 0
     },
 
