@@ -5,6 +5,7 @@
 //TODO: Check userController.js
 //TODO: Check productController.js
 //TODO: Figure out logging users out
+//TODO: Implement password security check on the frontend
 
 require("dotenv").config();
 const express = require("express");
@@ -25,9 +26,9 @@ const productController = require("./controllers/productController");
 const userController = require("./controllers/userController");
 
 app.use("/api/category", categoryController);
-app.use("/api/order", categoryController);
-app.use("/api/product", categoryController);
-app.use("/api/user", categoryController);
+app.use("/api/order", orderController);
+app.use("/api/product", productController);
+app.use("/api/user", userController);
 
 async function startServer() {
     await mongoose.connect(DB_URL)
