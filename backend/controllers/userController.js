@@ -24,10 +24,10 @@ router.route("/:id")
         //Get all user info
         try {
             const user = await User.findById(req.params.id);
-            if (!user) return res.status(404).send({message: "User not found"});
+            if (!user) return res.status(404).send({ message: "User not found" });
             else return res.status(200).send(user);
         } catch (error) {
-            return res.status(500).send({message: error.message});
+            return res.status(500).send({ message: error.message });
         }
     })
     .put(() => {
@@ -48,16 +48,29 @@ router.route("/:id")
     })
 
 router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await User.login(email, password);
-        const token = createToken(user._id);
-        res.status(200).json({ email, token });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+    const user = await User.findOne({ email: req.body.email })
+    const secret = process.env.secret;
+    if (!user) {
+        return res.status(400).send({message: `Cannot find user with email ${req.body.email}`});
     }
-});
 
+    if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                isAdmin: user.isAdmin
+            },
+            secret,
+            { expiresIn: '1d' }
+        )
+
+        res.status(200).send({ user: user.email, token: token })
+    } else {
+        res.status(400).send({message: "Wrong password"});
+    }
+
+
+});
 router.post("/register", async (req, res) => {
     const { email, password, address } = req.body;
     try {
