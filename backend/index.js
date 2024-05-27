@@ -4,6 +4,7 @@
 //TODO: Change the orderModel so that it supports other payment methods.
 //TODO: Check userController.js
 //TODO: Check productController.js
+//TODO: Figure out logging users out
 
 require("dotenv").config();
 const express = require("express");
