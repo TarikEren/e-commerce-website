@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const validator = require("validator");
 
 const Order = require("./orderModel");
@@ -34,16 +34,16 @@ const userSchema = new mongoose.Schema({
             default: 0
         }
     },
-    likedProducts: {
-        type: [Order],
-        default: []
-    },
+    // likedProducts: {
+    //     type: [Order],
+    //     default: []
+    // },
 
-    //Past payments so that the user can review them
-    pastPayments: {
-        type: [Payment],
-        default: []
-    }
+    // //Past payments so that the user can review them
+    // pastPayments: {
+    //     type: [Payment],
+    //     default: []
+    // }
 }, { collection: "users" });
 
 userSchema.statics.signup = async function (email, password, address) {
@@ -55,11 +55,6 @@ userSchema.statics.signup = async function (email, password, address) {
         throw Error("Please provide a valid email");
     }
 
-    //TODO: Remove and perform the check on the frontend
-    if (!validator.isStrongPassword(password)) {
-        throw Error("Password must include at least an uppercase character, a digit and a non-alphanumerical Character");
-    }
-
     //Check if email is already in use.
     const exists = await this.findOne({ email });
     if (exists) {
@@ -67,8 +62,8 @@ userSchema.statics.signup = async function (email, password, address) {
     }
 
     //Salt and hash the password.
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    const hash = await bcryptjs.hash(password, salt);
 
     //Create a user and return it.
     const user = await this.create(
@@ -90,7 +85,7 @@ userSchema.statics.login = async function (email, password) {
         throw Error("Incorrect email");
     }
 
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcryptjs.compare(password, user.password);
     if (!match) {
         throw Error("Incorrect password");
     }
