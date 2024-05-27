@@ -1,11 +1,27 @@
-
 //TODOS
-//TODO: Read the comments in the files.
-//TODO: Change the orderModel so that it supports other payment methods.
+//TODO: Change the orderModel so that it supports other payment methods
 //TODO: Check userController.js
 //TODO: Check productController.js
 //TODO: Figure out logging users out
 //TODO: Implement password security check on the frontend
+//TODO: Check if the user is admin for a bunch of controller operations
+
+//HIGHLY IMPORTANT
+//TODO: Add a firewall to the server after deployment.
+//TODO: Research how to implement secure and reliable payments (PCI DSS)
+//TODO: Check payment processors. https://www.tcmb.gov.tr/wps/wcm/connect/TR/TCMB+TR/Main+Menu/Temel+Faaliyetler/Odeme+Sistemleri/Turkiyedeki+Odeme+Sistemleri/
+//TODO: Follow these
+// https://fabric.inc/blog/product/build-vs-buy-pim-product-variation
+// https://fabric.inc/blog/product/build-vs-buy-pim-product-management
+// https://fabric.inc/blog/product/build-vs-buy-pim-data-distribution
+
+//Backend Related
+//TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
+//TODO: Login-Register
+
+//Frontend Related
+//TODO: Implement the entire frontend as it's currently non-existent
+
 
 require("dotenv").config();
 const express = require("express");
@@ -45,19 +61,3 @@ async function startServer() {
 }
 
 startServer();
-
-//HIGHLY IMPORTANT
-//TODO: Add a firewall to the server after deployment.
-//TODO: Research how to implement secure and reliable payments (PCI DSS)
-//TODO: Check payment processors. https://www.tcmb.gov.tr/wps/wcm/connect/TR/TCMB+TR/Main+Menu/Temel+Faaliyetler/Odeme+Sistemleri/Turkiyedeki+Odeme+Sistemleri/
-//TODO: Follow these
-// https://fabric.inc/blog/product/build-vs-buy-pim-product-variation
-// https://fabric.inc/blog/product/build-vs-buy-pim-product-management
-// https://fabric.inc/blog/product/build-vs-buy-pim-data-distribution
-
-//Backend Related
-//TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
-//TODO: Login-Register
-
-//Frontend Related
-//TODO: Implement the entire frontend as it's currently non-existent
