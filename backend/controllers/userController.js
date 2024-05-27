@@ -69,8 +69,9 @@ router.post("/login", async (req, res) => {
         res.status(400).send({message: "Wrong password"});
     }
 
-
 });
+
+//Redirect after register
 router.post("/register", async (req, res) => {
     const { email, password, address } = req.body;
     try {
