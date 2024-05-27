@@ -55,7 +55,7 @@ const orderSchema = new mongoose.Schema({
     },
     shippingAddress2: {
         type: String,
-        required: true
+        default: ""
     },
 
     city: {
@@ -71,6 +71,14 @@ const orderSchema = new mongoose.Schema({
     phone: {
         type: Number,
         required: true
+    },
+    status: {
+        type: String,
+        default: "Pending"
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     },
 
     //Origin address
