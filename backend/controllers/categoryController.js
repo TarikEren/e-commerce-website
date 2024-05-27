@@ -20,7 +20,7 @@ router.route("/")
             color: req.body.color
         })
         try {
-            category = await Category.save();
+            category = await category.save();
             res.status(201).send({ message: `Category with ID ${category._id} created successfully` });
         }
         catch (error) {
@@ -58,7 +58,7 @@ router.route("/:id")
     })
     .delete(async (req, res) => {
         try {
-            Category.findByIdAndRemove(req.params.id).then(category => {
+            Category.findByIdAndDelete(req.params.id).then(category => {
                 if (category) {
                     return res.status(200).send({message: `Deleted category with ID ${category._id}`});
                 }
