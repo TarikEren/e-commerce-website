@@ -29,18 +29,15 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, address } = req.body;
     try {
-        const user = await User.signup(email, password);
+        const user = await User.signup(email, password, address);
         const token = createToken(user._id);
         res.status(200).json({ email, token });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 })
-
-router.get("/:id/logout", () => {
-});
 
 
 //CART SECTION
