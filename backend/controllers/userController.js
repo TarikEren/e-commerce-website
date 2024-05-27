@@ -7,14 +7,44 @@ const createToken = (_id) => {
     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2h" });
 }
 
+router.get("/", async (req, res) => {
+    try {
+        const users = await User.find();
+        if (!users) return res.status(404).send({ message: "No users found" });
+        else return res.status(200).send(users);
+    }
+    catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+});
 
 //USER SECTION
 router.route("/:id")
-    .get(() => {
+    .get(async (req, res) => {
         //Get all user info
+        try {
+            const user = await User.findById(req.params.id);
+            if (!user) return res.status(404).send({message: "User not found"});
+            else return res.status(200).send(user);
+        } catch (error) {
+            return res.status(500).send({message: error.message});
+        }
     })
     .put(() => {
         //Edit user info 
+    })
+    .delete(async (req, res) => {
+        try {
+            await User.findByIdAndDelete(req.params.id).then((user) => {
+                if (user) {
+                    return res.status(200).send({ message: `Deleted user with ID ${user._id}` });
+                }
+                else return res.status(404).send({ message: "User not found" });
+            });
+        }
+        catch (error) {
+            res.status(500).send({ message: error.message });
+        }
     })
 
 router.post("/login", async (req, res) => {
@@ -37,7 +67,8 @@ router.post("/register", async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
-})
+});
+
 
 
 //CART SECTION
