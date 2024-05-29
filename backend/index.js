@@ -2,14 +2,16 @@
 //TODO: Change the orderModel so that it supports other payment methods
 //TODO: Check userController.js
 //TODO: Check productController.js
+//TODO: Fix auth
 //TODO: Figure out logging users out
 //TODO: Implement password security check on the frontend
 //TODO: Check if the user is admin for a bunch of controller operations
 
 //HIGHLY IMPORTANT
-//TODO: Add a firewall to the server after deployment.
+//TODO: Add a firewall to the server after deployment. (General security)
 //TODO: Research how to implement secure and reliable payments (PCI DSS)
 //TODO: Check payment processors. https://www.tcmb.gov.tr/wps/wcm/connect/TR/TCMB+TR/Main+Menu/Temel+Faaliyetler/Odeme+Sistemleri/Turkiyedeki+Odeme+Sistemleri/
+//TODO: Check the "OPTIONS" method in jwt.js as it may cause security problems
 //TODO: Follow these
 // https://fabric.inc/blog/product/build-vs-buy-pim-product-variation
 // https://fabric.inc/blog/product/build-vs-buy-pim-product-management
