@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
+    "dev_auth": "nodemon authServer.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
