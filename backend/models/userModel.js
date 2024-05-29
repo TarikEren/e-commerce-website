@@ -15,7 +15,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     //Payment or delivery address of the user
     address: [{
         street1: {
