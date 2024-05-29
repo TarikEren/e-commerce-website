@@ -1,7 +1,8 @@
 const router = require("express").Router();
-const Product = require("../models/productModel.js");
+const mongoose = require("mongoose");
 const multer = require("multer");
 const Category = require("../models/categoryModel.js");
+const Product = require("../models/productModel.js");
 
 const FILE_TYPE_MAP = {
     "image/png": "png",
@@ -41,21 +42,28 @@ router.route("/")
         catch (err) {
             res.status(500).send({ message: err });
         }
-
     })
     .post(async (req, res) => {
-        const new_product = new Product({
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            material: req.body.material,
-            category: req.body.category
-        });
         try {
+            const category = await Category.findById(req.body.category);
+
+            const fileName = req.fileName; //TODO: Prompt the user to provide a file
+            if (!category) return res.status(404).send({ message: "No such category found" });
+
+            const new_product = new Product({
+                name: req.body.name,
+                description: req.body.description,
+                price: req.body.price,
+                color: req.body.color,
+                material: req.body.material,
+                category: req.body.category,
+                size: req.body.size,
+                image: fileName ? `../public/${fileName}` : ""
+            });
             await new_product.save();
-            res.status(201).json({ message: `Created product with ID: ${new_product._id}` })
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+            return res.status(201).json({ message: `Created product with ID: ${new_product._id}` })
+        } catch (error) {
+            return res.status(500).send({ message: error.message });
         }
     });
 
@@ -72,18 +80,26 @@ router.route("/:id")
         }
     })
     .put(getProduct, async (req, res) => {
-        if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).send({ message: "Invalid ID" });
+        const productToSave = {
+            
+        }
         try {
+            if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).send({ message: "Invalid ID" });
             const product = await Product.findByIdAndUpdate(
                 req.params.id, {
-                name: req.body.name,
-                description: req.body.description,
-                category: req.body.category,
-                price: req.body.price,
-                material: req.body.material,
-                size: req.body.size,
-                color: req.body.color,
-                quantity: req.body.quantity,
+                name: req.body.name ? req.body.name : product.name,
+                description: req.body.description ? req.body.description : product.category,
+                category: req.body.category ? req.body.category : product.category,
+                price: req.body.price ? req.body.price : product.price,
+                material: req.body.material ? req.body.material : product.material,
+                size: req.body.size ? req.body.size : product.size,
+                color: req.body.color ? req.body.color : product.color,
+                quantity: req.body.quantity ? req.body.quantity : product.quantity,
+                image: req.body.image ? req.body.image : product.image,
+                countInStock: req.body.countInStock ? req.body.countInStock : product.countInStock,
+                rating: req.body.rating ? req.body.rating : product.rating,
+                numReviews: req.body.numReviews ? req.body.numReviews : product.numReviews,
+                isFeatured: req.body.isFeatured ? req.body.isFeatured : product.isFeatured,
             },
                 { new: true })
             const productToSave = await res.product.save();
@@ -126,37 +142,37 @@ router.get("/featured/count", async (req, res) => {
 });
 
 router.put('/gallery-images/:id', uploadOptions.array('images', 10), async (req, res) => {
-        if (!mongoose.isValidObjectId(req.params.id)) {
-            return res.status(400).send('Invalid Product Id')
-        }
-        try {
-            const files = req.files
-            let imagesPaths = [];
-            const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-
-            if (files) {
-                files.map(file => {
-                    imagesPaths.push(`${basePath}${file.filename}`);
-                })
-            }
-
-            const product = await Product.findByIdAndUpdate(
-                req.params.id,
-                {
-                    images: imagesPaths
-                },
-                { new: true }
-            )
-
-            if (!product)
-                return res.status(404).send({message: "Product not found"})
-
-            res.send(product);
-        }
-        catch (error) {
-            return res.status(500).send({message: error.message});
-        }
+    if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).send('Invalid Product Id')
     }
+    try {
+        const files = req.files
+        let imagesPaths = [];
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+
+        if (files) {
+            files.map(file => {
+                imagesPaths.push(`${basePath}${file.filename}`);
+            })
+        }
+
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            {
+                images: imagesPaths
+            },
+            { new: true }
+        )
+
+        if (!product)
+            return res.status(404).send({ message: "Product not found" })
+
+        res.send(product);
+    }
+    catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
 )
 
 
