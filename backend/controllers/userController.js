@@ -1,12 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/userModel");
 const Product = require("../models/productModel");
-const bcryptjs = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
-const createToken = (_id) => {
-    return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2h" });
-}
+const { authToken } = require("../util/auth");
 
 router.get("/", async (req, res) => {
     try {
@@ -21,7 +16,7 @@ router.get("/", async (req, res) => {
 
 //USER SECTION
 router.route("/:id")
-    .get(async (req, res) => {
+    .get(authToken, async (req, res) => {
         //Get all user info
         try {
             const user = await User.findById(req.params.id);
@@ -31,12 +26,13 @@ router.route("/:id")
             return res.status(500).send({ message: error.message });
         }
     })
-    .put(() => {
+    //TODO: Implement
+    .put(authToken, async (req, res) => {
         //Edit user info 
     })
 
     //TODO: Add admin auth
-    .delete(async (req, res) => {
+    .delete(authToken, async (req, res) => {
         //Delete user
         try {
             await User.findByIdAndDelete(req.params.id).then((user) => {
@@ -51,48 +47,11 @@ router.route("/:id")
         }
     })
 
-router.post("/login", async (req, res) => {
-    const user = await User.findOne({ email: req.body.email })
-    const secret = process.env.secret;
-    if (!user) {
-        return res.status(400).send({message: `Cannot find user with email ${req.body.email}`});
-    }
-
-    if (user && bcryptjs.compareSync(req.body.password, user.password)) {
-        const token = jwt.sign(
-            {
-                userId: user.id,
-                isAdmin: user.isAdmin
-            },
-            secret,
-            { expiresIn: '1d' }
-        )
-
-        res.status(200).send({ user: user.email, token: token })
-    } else {
-        res.status(400).send({message: "Wrong password"});
-    }
-
-});
-
-//Redirect after register
-router.post("/register", async (req, res) => {
-    const { email, password, address } = req.body;
-    try {
-        const user = await User.signup(email, password, address);
-        const token = createToken(user._id);
-        res.status(200).json({ email, token });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-});
-
-
 
 //CART SECTION
 router.route("/:id/cart")
     //For viewing the cart of a user
-    .get(async (req, res) => {
+    .get(authToken, async (req, res) => {
         //Show all products
         try {
 
@@ -102,7 +61,7 @@ router.route("/:id/cart")
         }
     })
     //For adding a product to the cart of a user
-    .post(async (req, res) => {
+    .post(authToken, async (req, res) => {
         //Add new products
         try {
             const product = Product.findById()
@@ -112,7 +71,7 @@ router.route("/:id/cart")
         }
     })
     //For deleting the entire cart's contents (May be removed later on)
-    .delete(async (req, res) => {
+    .delete(authToken, async (req, res) => {
         //Remove products (Can be used for ending a payment)
         try {
 
@@ -124,11 +83,11 @@ router.route("/:id/cart")
 
 router.route("/:id/cart/:productID")
     //For getting a certain product from the cart
-    .get(() => {
+    .get(authToken, async () => {
         //Get one product from cart
     })
     //For deleting a certain product from the cart
-    .delete(() => {
+    .delete(authToken, async () => {
         //Remove a product from the cart
     });
 
@@ -136,26 +95,26 @@ router.route("/:id/cart/:productID")
 //HISTORY SECTION (For past payments)
 router.route("/:id/history")
     //For viewing every order of a user
-    .get(() => {
+    .get(authToken, async () => {
 
     })
     //For pushing a successful payment to the past payments
-    .post(() => {
+    .post(authToken, async () => {
 
     })
 
 //For removing all orders of a user (May be removed later on)
-router.delete("/:id/order", () => {
+router.delete("/:id/order", authToken, async () => {
     //Delete all past orders of the user
 });
 
 router.route("/:id/order/:orderID")
     //For viewing a certain past payment
-    .get(() => {
+    .get(authToken, async () => {
 
     })
     //For deleting a past payment
-    .delete(() => {
+    .delete(authToken, async () => {
 
     })
 
