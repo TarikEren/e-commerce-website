@@ -45,7 +45,7 @@ const orderSchema = mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-})
+}, {collection: "orders"})
 
 orderSchema.virtual("id").get(function () {
     return this._id.toHexString();
