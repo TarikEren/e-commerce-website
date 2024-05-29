@@ -53,7 +53,7 @@ async function startServer() {
         .then(() => {
             console.log("Connected to the database");
             app.listen(PORT, (req, res) => {
-                console.log(`Server listening on port ${PORT}`);
+                console.log(`Main Server listening on port ${PORT}`);
             });
         })
         .catch((err) => {
