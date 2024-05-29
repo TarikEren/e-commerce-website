@@ -16,9 +16,9 @@ module.exports = {
 
     },
     generateAccessToken: function (user) {
-        return jwt.sign(user.toJSON(), process.env.SECRET, {expiresIn: "1h"});
+        return jwt.sign({user}, process.env.SECRET, {expiresIn: "1h"});
     },
     generateRefreshToken: function (user) {
-        return jwt.sign(user.toJSON(), process.env.REFRESH_SECRET);
+        return jwt.sign({user}, process.env.REFRESH_SECRET);
     }
 }
