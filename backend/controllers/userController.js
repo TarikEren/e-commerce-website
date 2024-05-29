@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/userModel");
 const Product = require("../models/productModel");
+const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const createToken = (_id) => {
@@ -33,7 +34,10 @@ router.route("/:id")
     .put(() => {
         //Edit user info 
     })
+
+    //TODO: Add admin auth
     .delete(async (req, res) => {
+        //Delete user
         try {
             await User.findByIdAndDelete(req.params.id).then((user) => {
                 if (user) {
@@ -54,7 +58,7 @@ router.post("/login", async (req, res) => {
         return res.status(400).send({message: `Cannot find user with email ${req.body.email}`});
     }
 
-    if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+    if (user && bcryptjs.compareSync(req.body.password, user.password)) {
         const token = jwt.sign(
             {
                 userId: user.id,
