@@ -6,6 +6,7 @@
 //TODO: Figure out logging users out
 //TODO: Implement password security check on the frontend
 //TODO: Check if the user is admin for a bunch of controller operations
+//TODO: Try storing the token in the localStorage
 
 //HIGHLY IMPORTANT
 //TODO: Add a firewall to the server after deployment. (General security)
@@ -25,35 +26,52 @@
 //TODO: Implement the entire frontend as it's currently non-existent
 
 
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
+const { logger } = require('./middleware/logEvents');
+const errorHandler = require('./middleware/errorHandler');
+const verifyJWT = require('./middleware/verifyJWT');
+const cookieParser = require('cookie-parser');
+const credentials = require('./middleware/credentials');
+const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-const cors = require("cors");
 
 const DB_URL = process.env.DB_URL;
 const PORT = process.env.PORT;
 
 const app = express();
+
+app.use(logger);
+app.use(credentials);
+
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
-const categoryController = require("./controllers/categoryController");
-const orderController = require("./controllers/orderController");
-const productController = require("./controllers/productController");
-const userController = require("./controllers/userController");
+app.use(cookieParser());
+app.use("/", express.static(path.join(__dirname, "/public")));
 
-app.use("/api/category", categoryController);
-app.use("/api/order", orderController);
-app.use("/api/product", productController);
-app.use("/api/user", userController);
+app.use('/register', require('./routes/register'));
+app.use('/auth', require('./routes/auth'));
+app.use('/refresh', require('./routes/refresh'));
+app.use('/logout', require('./routes/logout'));
+app.use("/api/category", require("./routes/api/category"));
+
+app.use(verifyJWT);
+app.use("/api/order", require("./routes/api/order"));
+app.use("/api/product", require("./routes/api/product"));
+app.use("/api/user", require("./routes/api/user"));
+
+app.use(errorHandler);
 
 async function startServer() {
     await mongoose.connect(DB_URL)
         .then(() => {
             console.log("Connected to the database");
             app.listen(PORT, (req, res) => {
-                console.log(`Main Server listening on port ${PORT}`);
+                console.log(`Server listening on port ${PORT}`);
             });
         })
         .catch((err) => {
