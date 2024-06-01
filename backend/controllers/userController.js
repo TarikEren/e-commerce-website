@@ -1,123 +1,116 @@
-const router = require("express").Router();
 const User = require("../models/userModel");
-const Product = require("../models/productModel");
-const { authToken } = require("../util/auth");
 
-router.get("/", async (req, res) => {
-    try {
-        const users = await User.find();
-        if (!users) return res.status(404).send({ message: "No users found" });
-        else return res.status(200).send(users);
+const getAllUsers = async (req, res) => {
+    //Find all users
+    const users = await User.find();
+
+    //If couldn't find any users, send 204
+    if (!users) return res.status(204).send({ "message": "No users found" });
+
+    //Send users
+    res.send(users);
+}
+
+const getUser = async (req, res) => {
+    if (!req?.params?.id) return res.status(400).send({ "message": "User ID required" });
+
+    //Find user by ID
+    const user = await User.findById(req.params.id);
+
+    //If user is not found send 204
+    if (!user) return res.status(204).send({ "message": "No user found" });
+
+    //Send user
+    res.send(user);
+}
+
+const updateUser = async (req, res) => {
+    //If request body or ID section doesn't exist send 400
+    if (!req?.body?.id) return res.status(400).send({ "message": "User ID required" });
+
+    //Find user by ID
+    const user = await User.findById(req.body.id);
+
+    //If user is not found send 204
+    if (!user) return res.status(204).send({ "message": "No user found" });
+
+    //Check the body and if certain fields exist, edit them
+    //This part may cause problems if it causes a double sendStatus issue
+    if (!req?.body?.email) {
+        //Check if another user already has the new email.
+        const emailExists = User.findOne({ email: req.body.email });
+
+        //If the new email exists send 409 (Conflict)
+        if (userExists) return res.sendStatus(409);
+
+        //Change the current user's email
+        user.email = req.body.email;
     }
-    catch (error) {
-        return res.status(500).send({ message: error.message });
-    }
-});
+    //If password is provided change the user's password
+    if (!req?.body?.password) user.password = req.body.password;
 
-//USER SECTION
-router.route("/:id")
-    .get(authToken, async (req, res) => {
-        //Get all user info
-        try {
-            const user = await User.findById(req.params.id);
-            if (!user) return res.status(404).send({ message: "User not found" });
-            else return res.status(200).send(user);
-        } catch (error) {
-            return res.status(500).send({ message: error.message });
-        }
-    })
-    //TODO: Implement
-    .put(authToken, async (req, res) => {
-        //Edit user info 
-    })
+    //If address is provided change the user's address
+    if (!req?.body?.address) user.address = req.body.address;
 
-    //TODO: Add admin auth
-    .delete(authToken, async (req, res) => {
-        //Delete user
-        try {
-            await User.findByIdAndDelete(req.params.id).then((user) => {
-                if (user) {
-                    return res.status(200).send({ message: `Deleted user with ID ${user._id}` });
-                }
-                else return res.status(404).send({ message: "User not found" });
-            });
-        }
-        catch (error) {
-            res.status(500).send({ message: error.message });
-        }
-    })
+    //Save the user and send the result
+    const result = await user.save();
+    res.send(result);
+}
 
+const deleteUser = async (req, res) => {
+    //If request body or ID section doesn't exist send 400
+    if (!req?.body?.id) return res.status(400).send({ "message": "User ID required" });
 
-//CART SECTION
-router.route("/:id/cart")
-    //For viewing the cart of a user
-    .get(authToken, async (req, res) => {
-        //Show all products
-        try {
+    //Find user by ID
+    const user = await User.findById(req.body.id);
 
-        }
-        catch (err) {
+    //If user is not found send 204
+    if (!user) return res.status(204).send({ "message": "No user found" });
 
-        }
-    })
-    //For adding a product to the cart of a user
-    .post(authToken, async (req, res) => {
-        //Add new products
-        try {
-            const product = Product.findById()
-        }
-        catch (err) {
+    //Delete the user and send the result
+    const result = await User.findByIdAndDelete(req.body.id);
+    res.send(result);
+}
 
-        }
-    })
-    //For deleting the entire cart's contents (May be removed later on)
-    .delete(authToken, async (req, res) => {
-        //Remove products (Can be used for ending a payment)
-        try {
+const getCart = async (req, res) => {
 
-        }
-        catch (err) {
+}
 
-        }
-    });
+const addToCart = async (req, res) => {
 
-router.route("/:id/cart/:productID")
-    //For getting a certain product from the cart
-    .get(authToken, async () => {
-        //Get one product from cart
-    })
-    //For deleting a certain product from the cart
-    .delete(authToken, async () => {
-        //Remove a product from the cart
-    });
+}
+
+const removeFromCart = async (req, res) => {
+
+}
+
+const clearCart = async (req, res) => {
+
+}
+
+const getOldPayments = async (req, res) => {
+
+}
+
+const addOldPayment = async (req, res) => {
+
+}
+
+const removeOldPayment = async (req, res) => {
+
+}
 
 
-//HISTORY SECTION (For past payments)
-router.route("/:id/history")
-    //For viewing every order of a user
-    .get(authToken, async () => {
-
-    })
-    //For pushing a successful payment to the past payments
-    .post(authToken, async () => {
-
-    })
-
-//For removing all orders of a user (May be removed later on)
-router.delete("/:id/order", authToken, async () => {
-    //Delete all past orders of the user
-});
-
-router.route("/:id/order/:orderID")
-    //For viewing a certain past payment
-    .get(authToken, async () => {
-
-    })
-    //For deleting a past payment
-    .delete(authToken, async () => {
-
-    })
-
-
-
-module.exports = router;
+module.exports = {
+    getAllUsers,
+    getUser,
+    updateUser,
+    deleteUser,
+    getCart,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    getOldPayments,
+    addOldPayment,
+    removeOldPayment
+};
