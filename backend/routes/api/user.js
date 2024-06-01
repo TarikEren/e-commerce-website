@@ -7,7 +7,7 @@ const {
     getCart,
     addToCart,
     removeFromCart,
-    clearCart,
+    payment,
     getOldPayments,
     addOldPayment,
     removeOldPayment
@@ -27,7 +27,7 @@ router.route("/:id/cart")
     .delete(removeFromCart);
 
 router.route("/:id/checkout")
-    .get(clearCart);
+    .get(payment);
 
 router.route("/:id/payment-history")
     .get(getOldPayments)
