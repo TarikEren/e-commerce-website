@@ -1,8 +1,7 @@
 //TODOS
 //TODO: Change the orderModel so that it supports other payment methods
-//TODO: Check userController.js
 //TODO: Check productController.js
-//TODO: Fix auth
+//TODO: Add admin authentication
 //TODO: Figure out logging users out
 //TODO: Implement password security check on the frontend
 //TODO: Check if the user is admin for a bunch of controller operations
@@ -20,7 +19,6 @@
 
 //Backend Related
 //TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
-//TODO: Login-Register
 
 //Frontend Related
 //TODO: Implement the entire frontend as it's currently non-existent
@@ -31,7 +29,6 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
-const errorHandler = require('./middleware/errorHandler');
 const verifyJWT = require('./middleware/verifyJWT');
 const cookieParser = require('cookie-parser');
 const credentials = require('./middleware/credentials');
@@ -61,8 +58,6 @@ app.use(verifyJWT);
 app.use("/api/order", require("./routes/api/order"));
 app.use("/api/product", require("./routes/api/product"));
 app.use("/api/user", require("./routes/api/user"));
-
-app.use(errorHandler);
 
 async function startServer() {
     await mongoose.connect(DB_URL)
