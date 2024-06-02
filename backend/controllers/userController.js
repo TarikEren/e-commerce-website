@@ -23,7 +23,6 @@ const updateUser = async (req, res) => {
     //User retrieval is performed by the helper getUser function
     const user = req.user
     //Check the body and if certain fields exist, edit them
-    //This part may cause problems if it causes a double sendStatus issue
     if (req?.body?.email) {
         //Check if another user already has the new email.
         const emailExists = User.findOne({ email: req.body.email });
