@@ -1,11 +1,4 @@
 //TODOS
-//TODO: Change the orderModel so that it supports other payment methods
-//TODO: Check productController.js
-//TODO: Add admin authentication
-//TODO: Figure out logging users out
-//TODO: Implement password security check on the frontend
-//TODO: Check if the user is admin for a bunch of controller operations
-//TODO: Try storing the token in the localStorage
 
 //HIGHLY IMPORTANT
 //TODO: Add a firewall to the server after deployment. (General security)
@@ -18,10 +11,17 @@
 // https://fabric.inc/blog/product/build-vs-buy-pim-data-distribution
 
 //Backend Related
+//TODO: Check productController.js
+//TODO: Change the orderModel so that it supports other payment methods
 //TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
+//TODO: Check if the user is admin for a bunch of controller operations
+//TODO: Add admin authentication
 
 //Frontend Related
 //TODO: Implement the entire frontend as it's currently non-existent
+//TODO: Figure out logging users out
+//TODO: Try storing the token in the localStorage
+//TODO: Implement password security check on the frontend
 
 
 require('dotenv').config();
