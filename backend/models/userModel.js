@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
         default: []
     },
     phoneNumber: {
-        type: "",
+        type: String,
         default: ""
     },
     refreshToken: String
