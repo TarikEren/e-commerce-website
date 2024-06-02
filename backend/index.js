@@ -31,7 +31,6 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
-const { logger } = require('./middleware/logEvents');
 const errorHandler = require('./middleware/errorHandler');
 const verifyJWT = require('./middleware/verifyJWT');
 const cookieParser = require('cookie-parser');
@@ -44,7 +43,6 @@ const PORT = process.env.PORT;
 
 const app = express();
 
-app.use(logger);
 app.use(credentials);
 
 app.use(bodyParser.json());
