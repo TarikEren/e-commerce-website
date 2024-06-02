@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
         ref: "Order",
         default: []
     },
+    phoneNumber: {
+        type: "",
+        default: ""
+    },
     refreshToken: String
 }, { collection: "users" });
 

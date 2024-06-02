@@ -13,42 +13,43 @@ const getAllUsers = async (req, res) => {
 }
 
 const sendUser = async (req, res) => {
-    //User retrieval is performed by the helper getUser function
-    const user = req.user;
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(400).send({ "message": "No such user exists" });
     //Send user
-    res.send(user);
+    return res.status(200).send(user);
 }
 
 const updateUser = async (req, res) => {
     //User retrieval is performed by the helper getUser function
     const user = req.user
-    //Check the body and if certain fields exist, edit them
-    if (req?.body?.email) {
-        //Check if another user already has the new email.
-        const emailExists = User.findOne({ email: req.body.email });
+    //Check if email exists in case the user tries to change their email to another user's email
+    let userExists = await User.exists({ email: req.body.email });
+    if (userExists === null) {
+        //Check the body and certain fields exist, edit them
+        if (req?.body?.email) {
+            // if (emailExists) return res.status(409).send({"message": "Email already exists"});
+            user.email = req.body.email;
+        }
+        //If password is provided change the user's password
+        if (req?.body?.password) user.password = req.body.password;
 
-        //If the new email exists send 409 (Conflict)
-        if (emailExists) return res.sendStatus(409);
-
-        //Change the current user's email
-        user.email = req.body.email;
+        //If address is provided change the user's address
+        if (req?.body?.address) user.address = req.body.address;
+        if (req?.body?.phoneNumber) user.phoneNumber = req.body.phoneNumber;
+        //Save the user and send the result
+        const result = await user.save();
+        res.json(result);
     }
-    //If password is provided change the user's password
-    if (req?.body?.password) user.password = req.body.password;
-
-    //If address is provided change the user's address
-    if (req?.body?.address) user.address = req.body.address;
-
-    //Save the user and send the result
-    const result = await user.save();
-    res.send(result);
+    else {
+        return res.sendStatus(409);
+    }
 }
 
 const deleteUser = async (req, res) => {
     //User retrieval is performed by the helper getUser function   
     //Delete the user and send the result
-    const result = await User.findByIdAndDelete(req.params.id);
-    res.send(result);
+    const result = await User.findByIdAndDelete(req.body.id);
+    if (result) res.status(200).send({ "message": `Deleted user with ID ${req.user.id}` });
 }
 
 const getCart = async (req, res) => {
