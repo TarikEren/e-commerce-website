@@ -1,7 +1,8 @@
 const router = require("express").Router();
+const getUser = require("../../middleware/getUser");
 const {
     getAllUsers,
-    getUser,
+    sendUser,
     updateUser,
     deleteUser,
     getCart,
@@ -15,23 +16,23 @@ const {
 
 router.route("/")
     .get(getAllUsers)
-    .put(updateUser)
-    .delete(deleteUser);
 
 router.route("/:id")
-    .get(getUser);
+    .get(getUser, sendUser)
+    .put(getUser, updateUser)
+    .delete(getUser, deleteUser);
 
 router.route("/:id/cart")
-    .get(getCart)
-    .post(addToCart)
-    .delete(removeFromCart);
+    .get(getUser, getCart)
+    .post(getUser, addToCart)
+    .delete(getUser, removeFromCart);
 
 router.route("/:id/checkout")
-    .get(payment);
+    .get(getUser, payment);
 
 router.route("/:id/payment-history")
-    .get(getOldPayments)
-    .post(addOldPayment)
-    .delete(removeOldPayment)
+    .get(getUser, getOldPayments)
+    .post(getUser, addOldPayment)
+    .delete(getUser, removeOldPayment)
 
 module.exports = router;
