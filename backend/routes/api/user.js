@@ -16,11 +16,11 @@ const {
 
 router.route("/")
     .get(getAllUsers)
-
-router.route("/:id")
-    .get(getUser, sendUser)
     .put(getUser, updateUser)
     .delete(getUser, deleteUser);
+
+router.route("/:id")
+    .get(sendUser)
 
 router.route("/:id/cart")
     .get(getUser, getCart)
