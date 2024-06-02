@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const Category = require("../models/categoryModel.js");
 const Product = require("../models/productModel.js");
+const userModel = require("../models/userModel.js");
 
 const FILE_TYPE_MAP = {
     "image/png": "png",
@@ -33,37 +34,88 @@ const uploadOptions = multer({ storage: storage });
 const sendProduct = async (req, res) => {
     //Find product
     const product = await Product.findById(req.params.id);
+    try {
+        //If not found send 400
+        if (!product) return res.status(400).send({ "message": "No such user exists" });
 
-    //If not found send 400
-    if (!product) return res.status(400).send({ "message": "No such user exists" });
-
-    //If found send product
-    return res.status(200).send(product);
+        //If found send product
+        return res.status(200).send(product);
+    } catch (error) {
+        return res.status(500).send({ "message": error.message });
+    }
 }
 
 const addProduct = async (req, res) => {
-
+    if (
+        !req?.body?.name ||
+        !req?.body?.category ||
+        !req?.body?.price ||
+        !req?.body?.size ||
+        !req?.body?.color) {
+        return res.status(400).send({ "message": "Missing fields" });
+    }
+    try {
+        const newProduct = await Product.create({
+            name: req.body.name,
+            category: req.body.category, //Add category checking
+            price: req.body.price,
+            material: req.body.material,
+            size: req.body.size,
+            color: req.body.color,
+            quantity: req.body.quantity || 0,
+            rating: req.body.rating || 0,
+            isFeatured: req.body.isFeatured || false
+        });
+        await newProduct.save();
+        return res.status(201).send({ "message": `Product with ID ${newProduct._id} has been created` });
+    } catch (error) {
+        return res.status(500).send({ "message": error.message });
+    }
 }
 
 const getAllProducts = async (req, res) => {
-    //Find all products
-    const products = await Product.find();
+    try {
+        //Find all products
+        const products = await Product.find();
 
-    //If couldn't find any products, send 204
-    if (!products) return res.status(204).send({"message": "No products found"});
+        //If couldn't find any products, send 204
+        if (!products) return res.status(204).send({ "message": "No products found" });
 
-    //If products found, send them
-    res.send(products);
+        //If products found, send them
+        res.send(products);
+    } catch (error) {
+        res.status(500).send({ "message": error.message });
+    }
 }
 
 const editProduct = async (req, res) => {
     //Product retrieval is performed by the helper getProduct function
     const product = req.product
-    //Check if the body and certain fields exist, edit them
+    try {
+        //Check if the body and certain fields exist, edit them
+        if (!req?.body?.name) product.name = req.body.name;
+        if (!req?.body?.category) product.category = req.body.category; //Add category checking
+        if (!req?.body?.price) product.price = req.body.price;
+        if (!req?.body?.material) product.material = req.body.material;
+        if (!req?.body?.size) product.size = req.body.size;
+        if (!req?.body?.color) product.color = req.body.color;
+        if (!req?.body?.quantity) product.quantity = req.body.quantity;
+        if (!req?.body?.rating) product.rating = req.body.rating;
+        if (!req?.body?.isFeatured) product.isFeatured = req.body.isFeatured;
+        const result = await product.save();
+        res.send(result);
+    } catch (error) {
+        res.status(500).send({ "message": error.message });
+    }
 }
 
 const deleteProduct = async (req, res) => {
-
+    try {
+        const result = await User.findByIdAndDelete(req.body.id);
+        if (result) res.status(200).send({"message": `Deleted product with ID ${req.product.id}`})
+    } catch (error) {
+        return res.status(500).send({"message": error.message});
+    }
 }
 
 // router.route("/")
