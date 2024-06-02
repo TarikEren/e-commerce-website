@@ -1,9 +1,8 @@
 const router = require("express").Router();
-const mongoose = require("mongoose");
 const multer = require("multer");
 const Category = require("../models/categoryModel.js");
+const mongoose = require("mongoose");
 const Product = require("../models/productModel.js");
-const userModel = require("../models/userModel.js");
 
 const FILE_TYPE_MAP = {
     "image/png": "png",
@@ -58,6 +57,7 @@ const addProduct = async (req, res) => {
         const newProduct = await Product.create({
             name: req.body.name,
             category: req.body.category, //Add category checking
+            description: req.body.description,
             price: req.body.price,
             material: req.body.material,
             size: req.body.size,
@@ -90,19 +90,19 @@ const getAllProducts = async (req, res) => {
 
 const editProduct = async (req, res) => {
     //Product retrieval is performed by the helper getProduct function
-    const product = req.product
     try {
+        if (!req?.body?.id) return res.status(400).send({ "message": "Missing ID" });
+        const editedProduct = await Product.findById(req.body.id);
         //Check if the body and certain fields exist, edit them
-        if (!req?.body?.name) product.name = req.body.name;
-        if (!req?.body?.category) product.category = req.body.category; //Add category checking
-        if (!req?.body?.price) product.price = req.body.price;
-        if (!req?.body?.material) product.material = req.body.material;
-        if (!req?.body?.size) product.size = req.body.size;
-        if (!req?.body?.color) product.color = req.body.color;
-        if (!req?.body?.quantity) product.quantity = req.body.quantity;
-        if (!req?.body?.rating) product.rating = req.body.rating;
-        if (!req?.body?.isFeatured) product.isFeatured = req.body.isFeatured;
-        const result = await product.save();
+        editedProduct.name = req.body.name || editedProduct.name;
+        editedProduct.description = req.body.description || editedProduct.description;
+        editedProduct.category = req.body.category || editedProduct.category;
+        editedProduct.price = req.body.price || editedProduct.price;
+        editedProduct.material = req.body.material || editedProduct.material;
+        editedProduct.size = req.body.size || editedProduct.size;
+        editedProduct.color = req.body.color || editedProduct.color;
+        editedProduct.quantity = req.body.quantity || editedProduct.quantity;
+        const result = await editedProduct.save();
         res.send(result);
     } catch (error) {
         res.status(500).send({ "message": error.message });
@@ -110,163 +110,79 @@ const editProduct = async (req, res) => {
 }
 
 const deleteProduct = async (req, res) => {
+    const product = await Product.findById(req.body.id);
+    if (!product) return res.status(404).send({ "message": "Cannot find product" });
     try {
-        const result = await User.findByIdAndDelete(req.body.id);
-        if (result) res.status(200).send({"message": `Deleted product with ID ${req.product.id}`})
+        const result = await Product.findByIdAndDelete(req.body.id);
+        if (result) res.status(200).send({ "message": `Deleted product with ID ${req.body.id}` });
     } catch (error) {
-        return res.status(500).send({"message": error.message});
+        return res.status(500).send({ "message": error.message });
     }
 }
 
-// router.route("/")
-//     .get(async (req, res) => {
-//         let filter = {};
-//         if (req.query.categories) filter = { category: req.query.categories.split(',') };
-//         try {
-//             const productList = await Product.find(filter).populate("category");
-//             if (!productList) res.status(404).send({ message: "No products found" });
-//             else res.status(200).send(productList);
-//         }
-//         catch (err) {
-//             res.status(500).send({ message: err });
-//         }
-//     })
-//     .post(async (req, res) => {
-//         try {
-//             const category = await Category.findById(req.body.category);
+const getProductCount = async (req, res) => {
+    try {
+        const productCount = await Product.countDocuments((count) => count);
+        if (!productCount) res.status(204).send({ message: "No products found" });
+        else res.status(200).send(productCount);
+    }
+    catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
 
-//             const fileName = req.fileName; //TODO: Prompt the user to provide a file
-//             if (!category) return res.status(404).send({ message: "No such category found" });
+//TODO: Test these
+const getFeaturedCount = async (req, res) => {
+    try {
+        const count = req.params.count ? req.params.count : 0;
+        const products = await Product.find({ isFeatured: true }).limit(+count);
+        if (!products) res.status(204).send({ message: "No featured products found" });
+        else res.status(200).send(products);
+    }
+    catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
 
-//             const new_product = new Product({
-//                 name: req.body.name,
-//                 description: req.body.description,
-//                 price: req.body.price,
-//                 color: req.body.color,
-//                 material: req.body.material,
-//                 category: req.body.category,
-//                 size: req.body.size,
-//                 image: fileName ? `../public/${fileName}` : ""
-//             });
-//             await new_product.save();
-//             return res.status(201).json({ message: `Created product with ID: ${new_product._id}` })
-//         } catch (error) {
-//             return res.status(500).send({ message: error.message });
-//         }
-//     });
+const editProductImage = async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).send('Invalid Product Id')
+    }
+    try {
+        const files = req.files
+        let imagesPaths = [];
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
+        if (files) {
+            files.map(file => {
+                imagesPaths.push(`${basePath}${file.filename}`);
+            })
+        }
 
-// router.route("/:id")
-//     .get(getProduct, async (req, res) => {
-//         if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).send({ message: "Invalid ID" });
-//         try {
-//             const product = await Product.findById(req.params.id);
-//             res.status(200).json(product);
-//         }
-//         catch (err) {
-//             res.status(500).json({ message: err.message });
-//         }
-//     })
-//     .put(getProduct, async (req, res) => {
-//         const productToSave = {
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            {
+                images: imagesPaths
+            },
+            { new: true }
+        )
 
-//         }
-//         try {
-//             if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).send({ message: "Invalid ID" });
-//             const product = await Product.findByIdAndUpdate(
-//                 req.params.id, {
-//                 name: req.body.name ? req.body.name : product.name,
-//                 description: req.body.description ? req.body.description : product.category,
-//                 category: req.body.category ? req.body.category : product.category,
-//                 price: req.body.price ? req.body.price : product.price,
-//                 material: req.body.material ? req.body.material : product.material,
-//                 size: req.body.size ? req.body.size : product.size,
-//                 color: req.body.color ? req.body.color : product.color,
-//                 quantity: req.body.quantity ? req.body.quantity : product.quantity,
-//                 image: req.body.image ? req.body.image : product.image,
-//                 countInStock: req.body.countInStock ? req.body.countInStock : product.countInStock,
-//                 rating: req.body.rating ? req.body.rating : product.rating,
-//                 numReviews: req.body.numReviews ? req.body.numReviews : product.numReviews,
-//                 isFeatured: req.body.isFeatured ? req.body.isFeatured : product.isFeatured,
-//             },
-//                 { new: true })
-//             const productToSave = await res.product.save();
-//             res.status(200).send({ message: `Saved product with ID: ${productToSave.id}` });
-//         } catch (err) {
-//             res.status(500).send({ message: err });
-//         }
+        if (!product)
+            return res.status(404).send({ message: "Product not found" })
 
-//     })
-//     .delete(getProduct, async (req, res) => {
-//         try {
-//             await res.product.deleteOne();
-//             res.status(200).send({ message: `Deleted product with ID: ${res.product.id}` });
-//         } catch (error) {
-//             res.status(500).send({ message: err });
-//         }
-//     });
-
-// router.get("/count", async (req, res) => {
-//     try {
-//         const productCount = await Product.countDocuments((count) => count);
-//         if (!productCount) res.status(204).send({ message: "No products found" });
-//         else res.status(200).send(productCount);
-//     }
-//     catch (error) {
-//         res.status(500).send({ message: error.message });
-//     }
-// });
-
-// router.get("/featured/count", async (req, res) => {
-//     try {
-//         const count = req.params.count ? req.params.count : 0;
-//         const products = await Product.find({ isFeatured: true }).limit(+count);
-//         if (!products) res.status(204).send({ message: "No featured products found" });
-//         else res.status(200).send(products);
-//     }
-//     catch (error) {
-//         res.status(500).send({ message: error.message });
-//     }
-// });
-
-// router.put('/gallery-images/:id', uploadOptions.array('images', 10), async (req, res) => {
-//     if (!mongoose.isValidObjectId(req.params.id)) {
-//         return res.status(400).send('Invalid Product Id')
-//     }
-//     try {
-//         const files = req.files
-//         let imagesPaths = [];
-//         const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-
-//         if (files) {
-//             files.map(file => {
-//                 imagesPaths.push(`${basePath}${file.filename}`);
-//             })
-//         }
-
-//         const product = await Product.findByIdAndUpdate(
-//             req.params.id,
-//             {
-//                 images: imagesPaths
-//             },
-//             { new: true }
-//         )
-
-//         if (!product)
-//             return res.status(404).send({ message: "Product not found" })
-
-//         res.send(product);
-//     }
-//     catch (error) {
-//         return res.status(500).send({ message: error.message });
-//     }
-// }
-// )
+        res.send(product);
+    }
+    catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
 
 module.exports = {
     sendProduct,
     getAllProducts,
     addProduct,
     editProduct,
-    deleteProduct
+    deleteProduct,
+    getProductCount,
+    getFeaturedCount
 };

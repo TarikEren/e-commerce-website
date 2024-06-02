@@ -5,16 +5,29 @@ const {
     getAllProducts,
     addProduct,
     editProduct,
-    deleteProduct
+    deleteProduct,
+    getProductCount,
+    getFeaturedCount
 } = require("../../controllers/productController");
 
 router.route("/")
     .get(getAllProducts)
     .post(addProduct)
     .put(getProduct, editProduct)
-    .delete(getProduct, deleteProduct);
+    .delete(deleteProduct);
 
 router.route("/:id")
     .get(sendProduct)
+
+router.route("/count")
+    .get(getProductCount)
+
+router.route("/featured")
+    //TODO: Add get featured
+    .get()
+
+router.route("/count/featured")
+    .get(getFeaturedCount)
+
 
 module.exports = router;
