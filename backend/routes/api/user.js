@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const getUser = require("../../middleware/getUser");
+const verifyAdmin = require("../../middleware/verifyAdmin");
 const {
     getAllUsers,
     sendUser,
@@ -17,7 +18,7 @@ const {
 router.route("/")
     .get(getAllUsers)
     .put(getUser, updateUser)
-    .delete(getUser, deleteUser);
+    .delete(verifyAdmin, getUser, deleteUser);
 
 router.route("/:id")
     .get(sendUser)

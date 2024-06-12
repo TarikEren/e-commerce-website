@@ -15,7 +15,7 @@
 //TODO: Change the orderModel so that it supports other payment methods
 //TODO: Restructure the database using the schema in https://fabric.inc/blog/commerce/nosql-ecommerce-data-model
 //TODO: Check if the user is admin for a bunch of controller operations
-//TODO: Add admin authentication
+//TODO: Add pagination
 
 //Frontend Related
 //TODO: Implement the entire frontend as it's currently non-existent
